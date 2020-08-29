@@ -10,13 +10,17 @@ class Character
     end
 
     def move_x(x)
-        @pos_x += x
-        @image[0] += x
+        unless [@pos_x+x, @pos_y].inside_rect? [0, 0, 500, 500]
+            @pos_x += x
+            @image[0] += x
+        end
     end
 
     def move_y(y)
-        @pos_y += y
-        @image[1] += y
+        unless [@pos_x, @pos_y+y].inside_rect? [0, 0, 500, 500]
+            @pos_y += y
+            @image[1] += y    
+        end
     end
 
 end
