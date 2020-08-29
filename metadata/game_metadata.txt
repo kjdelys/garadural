@@ -1,0 +1,6 @@
+devid=kjoannon
+devtitle=Suzerain
+gameid=lviathan
+gametitle=Léviathan
+version=0.1
+icon=metadata/icon.png
