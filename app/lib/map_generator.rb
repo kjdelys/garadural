@@ -8,7 +8,7 @@ def generate_map
                 "rects" => [],
                 "collision" => []
             }
-
+            
             map_nord = "MAP_" + x.to_s + "_" + (y-1).to_s
             map_sud = "MAP_" + x.to_s + "_" + (y+1).to_s
             map_ouest = "MAP_" + (x-1).to_s + "_" + y.to_s
@@ -59,6 +59,12 @@ def generate_map
             mapper["borders"].each do |border|
                 mapper["collision"] << border
             end
+
+            if fragment? == true
+                mapper["fragment"] = [50, 50, 50, 50,"sprites/coffre.png"]
+                mapper["collision"] << mapper["fragment"]
+            end
+
             cases["MAP_"+x.to_s+"_"+y.to_s] = mapper
             File.open("mygame/app/map.rb", "a") {|f| f.write('MAP_' + x.to_s + '_' + y.to_s + ' = ' + mapper.to_s) }
             File.open("mygame/app/map.rb", "a") {|f| f.write("\n")}
@@ -123,4 +129,8 @@ def borders(opts={})
     end
 
     res
+end
+
+def fragment?
+    rand(NBR_FRAGMENTS) == 0
 end

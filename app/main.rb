@@ -5,7 +5,8 @@ require 'app/player.rb'
 
 STEP_SIZE = 10
 WIDTH_MAP = 10
-HEIGHT_MAP = 5
+HEIGHT_MAP = 10
+NBR_FRAGMENTS = (WIDTH_MAP*HEIGHT_MAP)/12
 def tick args
 
   args.state.game_started ||= false
@@ -35,6 +36,10 @@ def tick args
     args.outputs.solids << border
   end
   args.state.map_loaded = true
+  
+  unless current_map["fragment"].nil?
+    args.outputs.sprites << current_map["fragment"]
+  end
   args.outputs.sprites << player.image
   #move player
   args.state.player.move_x(-STEP_SIZE) if args.inputs.keyboard.left
@@ -44,7 +49,7 @@ def tick args
 
   if player.position != [0,0]
     player.change_salle(player.position)
-    #next_salle = 'MAP_' + player.salle_id
+    next_salle = 'MAP_' + player.salle_id
     player.teleport([500, 500])
   end
 
