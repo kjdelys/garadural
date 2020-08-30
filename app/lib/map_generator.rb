@@ -64,6 +64,8 @@ def generate_map
                 mapper["fragment"] = [50, 50, 50, 50,"sprites/coffre.png"]
                 mapper["collision"] << mapper["fragment"]
             end
+            
+            mapper["ennemies"] = ennemies(x+y)
 
             cases["MAP_"+x.to_s+"_"+y.to_s] = mapper
             File.open("mygame/app/map.rb", "a") {|f| f.write('MAP_' + x.to_s + '_' + y.to_s + ' = ' + mapper.to_s) }
@@ -133,4 +135,14 @@ end
 
 def fragment?
     rand(NBR_FRAGMENTS) == 0
+end
+
+def ennemies(difficulty)
+    res = []
+    nbr_ennemies = rand(difficulty)/2
+    (1..nbr_ennemies).each do |ennemy|
+        res << [rand(100), 50, 500, 50, "sprites/icon.png"]
+    end
+    puts "ENZO"
+    res
 end

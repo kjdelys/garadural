@@ -2,6 +2,7 @@ require 'app/lib/map_generator.rb'
 require 'app/map.rb'
 require 'app/character.rb'
 require 'app/player.rb'
+require 'app/ennemy.rb'
 
 STEP_SIZE = 10
 WIDTH_MAP = 10
@@ -11,6 +12,7 @@ def tick args
 
   args.state.game_started ||= false
   args.state.map_loaded ||= false
+  args.state[:ennemies] ||= []
 
   args.outputs.labels << [10, 30, args.gtk.current_framerate]
   if args.state.game_started == false
@@ -35,6 +37,16 @@ def tick args
   current_map["borders"].each do |border|
     args.outputs.solids << border
   end
+
+  (0..current_map["ennemies"]).each do |ennemy_prop|
+    ennemy = Ennemy.new(ennemy_prop[0], ennemy_prop[1], ennemy_prop[2], ennemy_prop[3], ennemy_prop[4], current_salle.gsub('MAP_', ''))
+    args.state[:ennemies] << ennemy
+  end
+  
+  args.state[:ennemies].each do |ennemy|
+    args.outputs.sprites << ennemy.image
+  end
+  
   args.state.map_loaded = true
   
   unless current_map["fragment"].nil?
@@ -42,6 +54,7 @@ def tick args
   end
   args.outputs.sprites << player.image
 
+   
   #move player
 
   if args.inputs.keyboard.right && args.inputs.keyboard.up
@@ -83,6 +96,7 @@ def tick args
     player.change_salle(player.position)
     next_salle = 'MAP_' + player.salle_id
     player.teleport([500, 500])
+    args.state[:ennemies] = []
   end
 
 end

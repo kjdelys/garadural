@@ -1,0 +1,3 @@
+class Ennemy < Character
+
+end
