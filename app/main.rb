@@ -15,7 +15,7 @@ def tick args
   args.state[:ennemies] ||= []
   args.state.ennemies_loaded ||= false
 
-  args.outputs.labels << [10, 30, args.gtk.current_framerate]
+  args.outputs.labels << [50, 50, args.gtk.current_framerate]
   if args.state.game_started == false
     generate_map()
     args.state.game_started = true
@@ -26,7 +26,9 @@ def tick args
   args.state.player = Player.new(50, 50, 500, 50, "sprites/icon.png", "3_3") if args.state.player.nil?
   player = args.state.player
   #args.outputs.labels << [500, 30, player.pos_x.to_s + " " + player.pos_y.to_s]
-
+  # player.collision_points.each do |cp|
+  #   args.outputs.labels << [cp[0], cp[1], "X", 255, 0, 0]
+  # end
   #-map
   current_salle = 'MAP_' + player.salle_id
   current_map = Object.const_get(current_salle)
@@ -42,13 +44,21 @@ def tick args
   if args.state.ennemies_loaded == false
     current_map["ennemies"].each do |ennemy_prop|
       ennemy = Ennemy.new(ennemy_prop[0], ennemy_prop[1], ennemy_prop[2], ennemy_prop[3], ennemy_prop[4], current_salle.gsub('MAP_', ''))
+      ennemy.aggressive = true
       args.state[:ennemies] << ennemy
     end
     args.state.ennemies_loaded = true
   end
 
   args.state[:ennemies].each do |ennemy|
-    ennemy.move([player.pos_x, player.pos_y])
+    if ennemy.aggressive == true
+      attack = ennemy.attack(player.collision_points)
+      ennemy.aggressive = false if attack == "stop"
+    else
+      if ennemy.can_see?(player) == true
+        ennemy.aggressive = true 
+      end
+    end
     args.outputs.sprites << ennemy.image
   end
   
