@@ -1,6 +1,6 @@
 class Character
 
-    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation
+    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation, :pv
     def initialize(longueur, largeur, pos_x, pos_y, image, salle_id)
         @longueur = longueur
         @largeur = largeur
@@ -9,6 +9,7 @@ class Character
         @orientation = 180
         @image = [pos_x, pos_y, longueur, largeur, image, @orientation]
         @salle_id = salle_id
+        @pv = 100
         
     end
 

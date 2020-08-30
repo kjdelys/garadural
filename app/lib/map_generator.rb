@@ -141,8 +141,7 @@ def ennemies(difficulty)
     res = []
     nbr_ennemies = rand(difficulty)/2
     (1..nbr_ennemies).each do |ennemy|
-        res << [rand(100), 50, 500, 50, "sprites/icon.png"]
+        res << [50, 50, rand(1280), rand(700), "sprites/icon.png"]
     end
-    puts "ENZO"
     res
 end

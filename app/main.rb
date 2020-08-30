@@ -5,14 +5,15 @@ require 'app/player.rb'
 require 'app/ennemy.rb'
 
 STEP_SIZE = 10
-WIDTH_MAP = 10
-HEIGHT_MAP = 10
+WIDTH_MAP = 5
+HEIGHT_MAP = 5
 NBR_FRAGMENTS = (WIDTH_MAP*HEIGHT_MAP)/12
 def tick args
 
   args.state.game_started ||= false
   args.state.map_loaded ||= false
   args.state[:ennemies] ||= []
+  args.state.ennemies_loaded ||= false
 
   args.outputs.labels << [10, 30, args.gtk.current_framerate]
   if args.state.game_started == false
@@ -38,12 +39,16 @@ def tick args
     args.outputs.solids << border
   end
 
-  (0..current_map["ennemies"]).each do |ennemy_prop|
-    ennemy = Ennemy.new(ennemy_prop[0], ennemy_prop[1], ennemy_prop[2], ennemy_prop[3], ennemy_prop[4], current_salle.gsub('MAP_', ''))
-    args.state[:ennemies] << ennemy
+  if args.state.ennemies_loaded == false
+    current_map["ennemies"].each do |ennemy_prop|
+      ennemy = Ennemy.new(ennemy_prop[0], ennemy_prop[1], ennemy_prop[2], ennemy_prop[3], ennemy_prop[4], current_salle.gsub('MAP_', ''))
+      args.state[:ennemies] << ennemy
+    end
+    args.state.ennemies_loaded = true
   end
-  
+
   args.state[:ennemies].each do |ennemy|
+    ennemy.move([player.pos_x, player.pos_y])
     args.outputs.sprites << ennemy.image
   end
   
@@ -97,6 +102,7 @@ def tick args
     next_salle = 'MAP_' + player.salle_id
     player.teleport([500, 500])
     args.state[:ennemies] = []
+    args.state.ennemies_loaded = false
   end
 
 end
