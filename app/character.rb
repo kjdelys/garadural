@@ -1,13 +1,15 @@
 class Character
 
-    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id
+    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation
     def initialize(longueur, largeur, pos_x, pos_y, image, salle_id)
         @longueur = longueur
         @largeur = largeur
         @pos_x = pos_x
         @pos_y = pos_y
-        @image = [pos_x, pos_y, longueur, largeur, image]
+        @orientation = 180
+        @image = [pos_x, pos_y, longueur, largeur, image, @orientation]
         @salle_id = salle_id
+        
     end
 
     def move_x(x)
@@ -82,5 +84,10 @@ class Character
         @pos_y = position[1]
         @image[0] = @pos_x
         @image[1] = @pos_y
+    end
+
+    def change_orientation(orientation)
+        @orientation = orientation
+        @image[5] = orientation
     end
 end

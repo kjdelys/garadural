@@ -41,11 +41,43 @@ def tick args
     args.outputs.sprites << current_map["fragment"]
   end
   args.outputs.sprites << player.image
+
   #move player
-  args.state.player.move_x(-STEP_SIZE) if args.inputs.keyboard.left
-  args.state.player.move_x(STEP_SIZE) if args.inputs.keyboard.right
-  args.state.player.move_y(STEP_SIZE) if args.inputs.keyboard.up
-  args.state.player.move_y(-STEP_SIZE) if args.inputs.keyboard.down
+
+  if args.inputs.keyboard.right && args.inputs.keyboard.up
+    player.move_x(STEP_SIZE)
+    player.move_y(STEP_SIZE)
+    player.change_orientation(45)
+  elsif args.inputs.keyboard.right && args.inputs.keyboard.down
+    player.move_x(STEP_SIZE)
+    player.move_y(-STEP_SIZE)
+    player.change_orientation(135)
+  elsif args.inputs.keyboard.right
+    player.move_x(STEP_SIZE)
+    player.change_orientation(90)
+  end
+
+  if args.inputs.keyboard.left && args.inputs.keyboard.up
+    player.move_x(-STEP_SIZE)
+    player.move_y(STEP_SIZE)
+    player.change_orientation(315)
+  elsif args.inputs.keyboard.left && args.inputs.keyboard.down
+    player.move_x(-STEP_SIZE)
+    player.move_y(-STEP_SIZE)
+    player.change_orientation(225)
+  elsif args.inputs.keyboard.left
+    player.move_x(-STEP_SIZE)
+    player.change_orientation(270)
+  end
+
+  if args.inputs.keyboard.up && !args.inputs.keyboard.left && !args.inputs.keyboard.right
+    player.move_y(STEP_SIZE)
+    player.change_orientation(0)
+  end
+  if args.inputs.keyboard.down && !args.inputs.keyboard.left && !args.inputs.keyboard.right
+    player.move_y(-STEP_SIZE)
+    player.change_orientation(180)
+  end
 
   if player.position != [0,0]
     player.change_salle(player.position)
