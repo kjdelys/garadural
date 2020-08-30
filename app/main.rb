@@ -44,8 +44,6 @@ def tick args
 
   if player.position != [0,0]
     player.change_salle(player.position)
-    
-    puts player.salle_id
     #next_salle = 'MAP_' + player.salle_id
     player.teleport([500, 500])
   end
