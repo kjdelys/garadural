@@ -5,7 +5,7 @@ def generate_map
         (1..HEIGHT_MAP).each do |y|
             mapper = {
                 "background" => background,
-                "rects" => [],
+                "rects" => rectangles,
                 "collision" => []
             }
             
@@ -56,7 +56,7 @@ def generate_map
             end
             
             mapper["borders"] = borders
-            mapper["borders"].each do |border|
+            (mapper["borders"]+mapper["rects"]).each do |border|
                 mapper["collision"] << border
             end
 
@@ -144,4 +144,13 @@ def ennemies(difficulty)
         res << [50, 50, rand(1280), rand(700), "sprites/icon.png"]
     end
     res
+end
+
+def rectangles
+    res = []
+    (1..rand(20)).each do |rect|
+        res << [rand(1280), rand(720), rand(100), rand(100)]
+    end
+    res
+
 end
