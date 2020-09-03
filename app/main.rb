@@ -3,6 +3,7 @@ require 'app/map.rb'
 require 'app/character.rb'
 require 'app/player.rb'
 require 'app/ennemy.rb'
+require 'app/bullet.rb'
 
 STEP_SIZE = 10
 WIDTH_MAP = 5
@@ -14,21 +15,22 @@ def tick args
   args.state.map_loaded ||= false
   args.state[:ennemies] ||= []
   args.state.ennemies_loaded ||= false
+  args.state[:bullets] ||= []
 
   args.outputs.labels << [50, 50, args.gtk.current_framerate]
   if args.state.game_started == false
     generate_map()
     args.state.game_started = true
   end
-
+  
   #initialize screen
   #-player
   args.state.player = Player.new(50, 50, 500, 50, "sprites/icon.png", "3_3") if args.state.player.nil?
   player = args.state.player
   #args.outputs.labels << [500, 30, player.pos_x.to_s + " " + player.pos_y.to_s]
-  # player.collision_points.each do |cp|
-  #   args.outputs.labels << [cp[0], cp[1], "X", 255, 0, 0]
-  # end
+  player.collision_points.each do |cp|
+    args.outputs.labels << [cp[0], cp[1], "X", 255, 0, 0]
+  end
   #-map
   current_salle = 'MAP_' + player.salle_id
   current_map = Object.const_get(current_salle)
@@ -107,11 +109,15 @@ def tick args
     player.change_orientation(180)
   end
 
+  if args.inputs.keyboard.space
+    args.state[:bullets] << player.shoot
+  end
+
   if player.position != [0,0]
     player.change_salle(player.position)
     next_salle = 'MAP_' + player.salle_id
     player.teleport([500, 500])
-    args.state[:ennemies] = []
+    args.state[:bullets] = []
     args.state.ennemies_loaded = false
   end
 

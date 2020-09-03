@@ -139,4 +139,8 @@ class Character
         end
         return true
     end
+
+    def shoot
+        Bullet.new(@orientation, @pos_x, @pos_y, 10)
+    end
 end
