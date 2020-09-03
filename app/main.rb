@@ -43,6 +43,10 @@ def tick args
     args.outputs.solids << border
   end
 
+  args.state[:bullets].each do |bullet|
+    args.outputs.solids << bullet.rect
+  end
+
   if args.state.ennemies_loaded == false
     current_map["ennemies"].each do |ennemy_prop|
       ennemy = Ennemy.new(ennemy_prop[0], ennemy_prop[1], ennemy_prop[2], ennemy_prop[3], ennemy_prop[4], current_salle.gsub('MAP_', ''))
@@ -109,8 +113,16 @@ def tick args
     player.change_orientation(180)
   end
 
-  if args.inputs.keyboard.space
+  if args.inputs.keyboard.key_down.space
     args.state[:bullets] << player.shoot
+  end
+
+  #update bullets
+  bullets = args.state[:bullets]
+  args.state[:bullets] = []
+  bullets.each do |bullet|
+    bullet.move_on
+    args.state[:bullets] << bullet
   end
 
   if player.position != [0,0]

@@ -141,6 +141,6 @@ class Character
     end
 
     def shoot
-        Bullet.new(@orientation, @pos_x, @pos_y, 10)
+        Bullet.new(@orientation, @pos_x, @pos_y, 25)
     end
 end
