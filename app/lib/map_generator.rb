@@ -152,5 +152,4 @@ def rectangles
         res << [rand(1280), rand(720), rand(100), rand(100)]
     end
     res
-
 end

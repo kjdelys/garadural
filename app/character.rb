@@ -33,7 +33,6 @@ class Character
 
         map_salle["collision"].each do |pos_rect|
             #CETTE BOUCLE N'EST PAS TERRIBLE. Voir si on peut faire une seule condition sans boucle
-            #LES COLLISIONS SONT BUGUEES, elles n'utilisent qu'un point du personnage, et pas son corps entier.
             collision_points.each do |cp|
                 if [cp[0]+x, cp[1]].inside_rect? pos_rect
                     inside = true
@@ -141,6 +140,6 @@ class Character
     end
 
     def shoot
-        Bullet.new(@orientation, @pos_x, @pos_y, 25)
+        Bullet.new(@orientation, @pos_x+(@largeur/2), @pos_y+(@longueur/2), 25, @salle_id)
     end
 end

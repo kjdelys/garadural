@@ -121,8 +121,8 @@ def tick args
   bullets = args.state[:bullets]
   args.state[:bullets] = []
   bullets.each do |bullet|
-    bullet.move_on
-    args.state[:bullets] << bullet
+    has_moved = bullet.move_on
+    args.state[:bullets] << bullet if has_moved
   end
 
   if player.position != [0,0]
