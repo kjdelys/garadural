@@ -1,6 +1,6 @@
 class Ennemy < Character
     attr_accessor :last_pos, :attempt, :aggressive
-    def attack(player_pos)
+    def attack(player_pos, collision_intervalles)
 
         vitesse = STEP_SIZE/2
         player_x = player_pos[0][0]
@@ -16,7 +16,7 @@ class Ennemy < Character
                 gauche = 0
             end
         end
-        move_y(haut*vitesse, (rand(3) == 1))
-        move_x(gauche*vitesse, (rand(3) == 1))
+        move_y(haut*vitesse, collision_intervalles, (rand(3) == 1))
+        move_x(gauche*vitesse, collision_intervalles, (rand(3) == 1))
     end
 end

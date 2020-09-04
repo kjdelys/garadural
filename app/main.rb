@@ -1,4 +1,5 @@
 require 'app/lib/map_generator.rb'
+require 'app/lib/helper.rb'
 require 'app/map.rb'
 require 'app/character.rb'
 require 'app/player.rb'
@@ -16,6 +17,7 @@ def tick args
   args.state[:ennemies] ||= []
   args.state.ennemies_loaded ||= false
   args.state[:bullets] ||= []
+  args.state[:collision_intervalles] ||= ''
 
   args.outputs.labels << [50, 50, args.gtk.current_framerate]
   if args.state.game_started == false
@@ -34,7 +36,9 @@ def tick args
   #-map
   current_salle = 'MAP_' + player.salle_id
   current_map = Object.const_get(current_salle)
-  
+  if args.state[:collision_intervalles] == ''
+    args.state[:collision_intervalles] = collision_intervalles(current_map["collision"])
+  end
   
   current_map["rects"].each do |rect|
     args.outputs.solids << rect
@@ -58,7 +62,7 @@ def tick args
 
   args.state[:ennemies].each do |ennemy|
     if ennemy.aggressive == true
-      attack = ennemy.attack(player.collision_points)
+      attack = ennemy.attack(player.collision_points, args.state[:collision_intervalles])
       ennemy.aggressive = false if attack == "stop"
     else
       if ennemy.can_see?(player) == true
@@ -79,37 +83,37 @@ def tick args
   #move player
 
   if args.inputs.keyboard.right && args.inputs.keyboard.up
-    player.move_x(STEP_SIZE)
-    player.move_y(STEP_SIZE)
+    player.move_x(STEP_SIZE, args.state[:collision_intervalles])
+    player.move_y(STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(45)
   elsif args.inputs.keyboard.right && args.inputs.keyboard.down
-    player.move_x(STEP_SIZE)
-    player.move_y(-STEP_SIZE)
+    player.move_x(STEP_SIZE, args.state[:collision_intervalles])
+    player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(135)
   elsif args.inputs.keyboard.right
-    player.move_x(STEP_SIZE)
+    player.move_x(STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(90)
   end
 
   if args.inputs.keyboard.left && args.inputs.keyboard.up
-    player.move_x(-STEP_SIZE)
-    player.move_y(STEP_SIZE)
+    player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
+    player.move_y(STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(315)
   elsif args.inputs.keyboard.left && args.inputs.keyboard.down
-    player.move_x(-STEP_SIZE)
-    player.move_y(-STEP_SIZE)
+    player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
+    player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(225)
   elsif args.inputs.keyboard.left
-    player.move_x(-STEP_SIZE)
+    player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(270)
   end
 
   if args.inputs.keyboard.up && !args.inputs.keyboard.left && !args.inputs.keyboard.right
-    player.move_y(STEP_SIZE)
+    player.move_y(STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(0)
   end
   if args.inputs.keyboard.down && !args.inputs.keyboard.left && !args.inputs.keyboard.right
-    player.move_y(-STEP_SIZE)
+    player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
     player.change_orientation(180)
   end
 
@@ -132,6 +136,7 @@ def tick args
     args.state[:bullets] = []
     args.state[:ennemies] = []
     args.state.ennemies_loaded = false
+    args.state[:collision_intervalles] = ''
   end
 
 end

@@ -12,34 +12,26 @@ class Character
         @pv = 100
     end
 
-    def collision_points
+    def collision_points(x=0,y=0)
         [
-            [@pos_x, @pos_y],
-            [@pos_x+(@largeur/2), @pos_y],
-            [@pos_x+@largeur, @pos_y],
-            [@pos_x, @pos_y+@longueur],
-            [@pos_x, @pos_y+(@longueur/2)],
-            [@pos_x+(@largeur/2), @pos_y+(@longueur/2)],
-            [@pos_x+@largeur, @pos_y+@longueur],
-            [@pos_x+@largeur, @pos_y+(@longueur/2)],
-            [@pos_x+(@largeur/2), @pos_y+@longueur]
+            [@pos_x+x, @pos_y+y],
+            [@pos_x+(@largeur/2)+x, @pos_y+y],
+            [@pos_x+x+@largeur, @pos_y+y],
+            [@pos_x+x, @pos_y+y+@longueur],
+            [@pos_x+x, @pos_y+y+(@longueur/2)],
+            [@pos_x+x+(@largeur/2), @pos_y+y+(@longueur/2)],
+            [@pos_x+x+@largeur, @pos_y+y+@longueur],
+            [@pos_x+x+@largeur, @pos_y+y+(@longueur/2)],
+            [@pos_x+x+(@largeur/2), @pos_y+y+@longueur]
         ]
     end
 
-    def move_x(x, auto=false, direction=1, force_auto=false, attempt=0)
+    def move_x(x, collision_inter, auto=false, direction=1, force_auto=false, attempt=0)
         map_salle = Object.const_get("MAP_" + @salle_id.to_s)
 
-        inside = false
-
-        map_salle["collision"].each do |pos_rect|
-            #CETTE BOUCLE N'EST PAS TERRIBLE. Voir si on peut faire une seule condition sans boucle
-            collision_points.each do |cp|
-                if [cp[0]+x, cp[1]].inside_rect? pos_rect
-                    inside = true
-                    break
-                end
-            end
-        end
+        collision_inter = collision_intervalles(map_salle["collision"])
+        collision_points = collision_points(x, 0)
+        inside = collision?(collision_points, collision_inter)
 
         unless inside
             @pos_x += x
@@ -55,21 +47,14 @@ class Character
         end
     end
 
-    def move_y(y, auto=false, direction=1, force_auto=false, attempt=0)
+    def move_y(y, collision_inter, auto=false, direction=1, force_auto=false, attempt=0)
         map_salle = Object.const_get("MAP_" + @salle_id)
 
         inside = false
 
-        map_salle["collision"].each do |pos_rect|
-            #CETTE BOUCLE N'EST PAS TERRIBLE. Voir si on peut faire une seule condition sans boucle
-            #LES COLLISIONS SONT BUGUEES, elles n'utilisent qu'un point du personnage, et pas son corps entier.
-            collision_points.each do |cp|
-                if [cp[0], cp[1]+y].inside_rect? pos_rect
-                    inside = true
-                    break
-                end
-            end
-        end
+        collision_inter = collision_intervalles(map_salle["collision"])
+        collision_points = collision_points(0, y)
+        inside = collision?(collision_points, collision_inter)
 
         unless inside
             @pos_y += y
