@@ -130,6 +130,7 @@ def tick args
     next_salle = 'MAP_' + player.salle_id
     player.teleport([500, 500])
     args.state[:bullets] = []
+    args.state[:ennemies] = []
     args.state.ennemies_loaded = false
   end
 
