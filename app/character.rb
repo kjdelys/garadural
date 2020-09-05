@@ -10,6 +10,7 @@ class Character
         @image = [pos_x, pos_y, longueur, largeur, image, @orientation]
         @salle_id = salle_id
         @pv = 100
+        @id = rand(10000)
     end
 
     def serialize
@@ -37,6 +38,18 @@ class Character
             [@pos_x+x+@largeur, @pos_y+y+(@longueur/2)],
             [@pos_x+x+(@largeur/2), @pos_y+y+@longueur]
         ]
+    end
+
+    def image_size
+        return @image[0...-2]
+    end
+
+    def image_rectangle
+        return [@pos_x, @pos_y, @pos_x+@largeur, @pos_y+@longueur]   
+    end
+
+    def class_id
+        self.subclass_name + "_" + @id.to_s
     end
 
     def to_s
@@ -145,5 +158,13 @@ class Character
 
     def shoot
         Bullet.new(@orientation, @pos_x+(@largeur/2), @pos_y+(@longueur/2), 25, @salle_id)
+    end
+
+    def change_pv(hp)
+        @pv += hp
+    end
+
+    def is_dead?
+        @pv < 0 ? true : false 
     end
 end

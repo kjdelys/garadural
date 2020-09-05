@@ -125,8 +125,25 @@ def tick args
   bullets = args.state[:bullets]
   args.state[:bullets] = []
   bullets.each do |bullet|
-    has_moved = bullet.move_on(args.state[:collision_intervalles])
-    args.state[:bullets] << bullet if has_moved
+    has_moved = (bullet.move_on(args.state[:collision_intervalles]) && bullet.move_on(collision_intervalles(args.state[:ennemies].map{|ennemy| ennemy.image_size})))
+    if has_moved
+      args.state[:bullets] << bullet 
+    else
+      ennemies = args.state[:ennemies]
+      (ennemies+[player]).each do |character|
+        if [bullet.last_pos_x, bullet.last_pos_y].inside_rect? character.image_rectangle
+          character.change_pv(-10)
+          if character.is_dead?
+            if character == player
+              puts("PARTIE TERMINE")
+            else
+              args.state[:ennemies].delete(character)
+            end
+          end
+          break
+        end
+      end
+    end
   end
 
   if player.position != [0,0]

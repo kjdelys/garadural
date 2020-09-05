@@ -1,5 +1,10 @@
 class Ennemy < Character
     attr_accessor :last_pos, :attempt, :aggressive
+
+    def subclass_name
+        "Ennemy"
+    end
+
     def attack(player_pos, collision_intervalles)
 
         vitesse = STEP_SIZE/2
