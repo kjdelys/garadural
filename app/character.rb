@@ -12,6 +12,19 @@ class Character
         @pv = 100
     end
 
+    def serialize
+        { 
+            longueur: @longueur,
+            largeur: @largeur,
+            pos_x: @pos_x,
+            pos_y: @pos_y, 
+            orientation: @orientation,
+            image: @image,
+            salle_id: @salle_id,
+            pv: @pv       
+        }
+    end
+    
     def collision_points(x=0,y=0)
         [
             [@pos_x+x, @pos_y+y],
@@ -26,13 +39,21 @@ class Character
         ]
     end
 
+    def to_s
+        serialize.to_s
+    end
+    
+    def inspect
+        serialize.to_s
+    end
+    
     def move_x(x, collision_inter, auto=false, direction=1, force_auto=false, attempt=0)
-        map_salle = Object.const_get("MAP_" + @salle_id.to_s)
-
-        collision_inter = collision_intervalles(map_salle["collision"])
+        unless collision_inter.class.to_s.include?("String")
+            puts("PATCH WORKED : " + collision_inter.class.to_s)
+            return
+        end
         collision_points = collision_points(x, 0)
         inside = collision?(collision_points, collision_inter)
-
         unless inside
             @pos_x += x
             @image[0] += x
@@ -48,14 +69,12 @@ class Character
     end
 
     def move_y(y, collision_inter, auto=false, direction=1, force_auto=false, attempt=0)
-        map_salle = Object.const_get("MAP_" + @salle_id)
-
-        inside = false
-
-        collision_inter = collision_intervalles(map_salle["collision"])
+        unless collision_inter.class.to_s.include?("String")
+            puts("PATCH WORKED : " + collision_inter.class.to_s)
+            return
+        end
         collision_points = collision_points(0, y)
         inside = collision?(collision_points, collision_inter)
-
         unless inside
             @pos_y += y
             @image[1] += y

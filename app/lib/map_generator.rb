@@ -8,6 +8,12 @@ def generate_map
                 "rects" => rectangles,
                 "collision" => []
             }
+
+            # mapper = {
+            #     "background" => background,
+            #     "rects" => rectangles,
+            #     "collision" => []
+            # }
             
             map_nord = "MAP_" + x.to_s + "_" + (y-1).to_s
             map_sud = "MAP_" + x.to_s + "_" + (y+1).to_s

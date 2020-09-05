@@ -36,10 +36,8 @@ def tick args
   #-map
   current_salle = 'MAP_' + player.salle_id
   current_map = Object.const_get(current_salle)
-  if args.state[:collision_intervalles] == ''
-    args.state[:collision_intervalles] = collision_intervalles(current_map["collision"])
-  end
-  
+
+
   current_map["rects"].each do |rect|
     args.outputs.solids << rect
   end
@@ -79,9 +77,11 @@ def tick args
   end
   args.outputs.sprites << player.image
 
+  if args.state[:collision_intervalles] == ''
+    args.state[:collision_intervalles] = collision_intervalles(current_map["collision"])
+  end
    
   #move player
-
   if args.inputs.keyboard.right && args.inputs.keyboard.up
     player.move_x(STEP_SIZE, args.state[:collision_intervalles])
     player.move_y(STEP_SIZE, args.state[:collision_intervalles])
@@ -125,7 +125,7 @@ def tick args
   bullets = args.state[:bullets]
   args.state[:bullets] = []
   bullets.each do |bullet|
-    has_moved = bullet.move_on
+    has_moved = bullet.move_on(args.state[:collision_intervalles])
     args.state[:bullets] << bullet if has_moved
   end
 

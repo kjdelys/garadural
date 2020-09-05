@@ -10,8 +10,8 @@ class Bullet
         @salle_id = salle_id
     end
 
-    def move_on
-        return false if self.hit?
+    def move_on(collision_intervalles)
+        return false if self.hit?(collision_intervalles)
         case @orientation
         when 0
             @last_pos_y = @last_pos_y + @speed
@@ -37,18 +37,8 @@ class Bullet
         return true
     end
 
-    def hit?
-        map_salle = Object.const_get("MAP_" + @salle_id.to_s)
-        inside = false
-
-        map_salle["collision"].each do |pos_rect|
-            #CETTE BOUCLE N'EST PAS TERRIBLE. Voir si on peut faire une seule condition sans boucle
-            if [@last_pos_x, @last_pos_y].inside_rect? pos_rect
-                inside = true
-                break
-            end
-        end
-        return inside        
+    def hit?(collision_intervalles)
+        return collision?([[@last_pos_x, @last_pos_y]], collision_intervalles)        
     end
 
     def rect

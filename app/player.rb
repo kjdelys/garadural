@@ -13,4 +13,5 @@ class Player < Character
         end
         return pos
     end
+
 end

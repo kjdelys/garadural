@@ -16,7 +16,12 @@ class Ennemy < Character
                 gauche = 0
             end
         end
-        move_y(haut*vitesse, collision_intervalles, (rand(3) == 1))
-        move_x(gauche*vitesse, collision_intervalles, (rand(3) == 1))
+        move_y(haut*vitesse, collision_intervalles, force_move?)
+        move_x(gauche*vitesse, collision_intervalles, force_move?)
     end
+
+    def force_move?
+        (rand(3) == 1)
+    end
+
 end
