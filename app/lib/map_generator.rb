@@ -1,6 +1,7 @@
 def generate_map
     File.open("mygame/app/map.rb", "w")
     cases = {}
+    statue_created = false
     (1..WIDTH_MAP).each do |x|
         (1..HEIGHT_MAP).each do |y|
             mapper = {
@@ -8,6 +9,17 @@ def generate_map
                 "rects" => rectangles,
                 "collision" => []
             }
+
+            if statue_created == false
+                may_create_statue = create_statue?
+                if !may_create_statue.nil?
+                    mapper["statue"] = may_create_statue
+                    statue_created = true
+                elsif x == WIDTH_MAP && y == HEIGHT_MAP
+                    mapper["statue"] = create_statue?(true)
+                    statue_created = true
+                end
+            end
 
             # mapper = {
             #     "background" => background,
@@ -26,6 +38,7 @@ def generate_map
             (mapper["borders"]+mapper["rects"]).each do |border|
                 mapper["collision"] << border
             end
+            mapper["collision"] << mapper["statue"][0...-4] if mapper["statue"]
 
             if fragment? == true
                 mapper["fragment"] = [50, 50, 50, 50,"sprites/coffre.png"]
@@ -125,4 +138,11 @@ def rectangles
         res << [rand(1280), rand(720), rand(100), rand(100)]
     end
     res
+end
+
+def create_statue?(force=false)
+    if rand(HEIGHT_MAP*WIDTH_MAP) == 0 || force == true
+        return [400, 200, 200, 100, 50, 50, 255, 128]
+    end
+    return nil
 end

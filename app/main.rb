@@ -19,7 +19,7 @@ def tick args
   args.state[:bullets] ||= []
   args.state[:collision_intervalles] ||= ''
 
-  args.outputs.labels << [50, 50, args.gtk.current_framerate]
+  
   if args.state.game_started == false
     generate_map()
     args.state.game_started = true
@@ -33,6 +33,9 @@ def tick args
   player.collision_points.each do |cp|
     args.outputs.labels << [cp[0], cp[1], "X", 255, 0, 0]
   end
+
+  args.outputs.labels << [50, 50, args.gtk.current_framerate.to_s + " " + player.salle_id]
+
   #-map
   current_salle = 'MAP_' + player.salle_id
   current_map = Object.const_get(current_salle)
@@ -77,6 +80,10 @@ def tick args
   end
   args.outputs.sprites << player.image
 
+  unless current_map["statue"].nil?
+    args.outputs.solids << current_map["statue"]
+  end
+  
   if args.state[:collision_intervalles] == ''
     args.state[:collision_intervalles] = collision_intervalles(current_map["collision"])
   end
