@@ -42,6 +42,6 @@ class Bullet
     end
 
     def rect
-        [@last_pos_x, @last_pos_y, 10, 10]
+        [@last_pos_x, @last_pos_y, 5, 5]
     end
 end

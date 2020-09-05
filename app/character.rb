@@ -138,7 +138,11 @@ class Character
 
     def change_orientation(orientation)
         @orientation = orientation
-        @image[5] = orientation
+        if [0, 180].include? orientation
+            @image[5] = orientation
+        else
+            @image[5] = 360 - orientation
+        end
     end
 
     def can_see?(character)

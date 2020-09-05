@@ -27,7 +27,7 @@ def tick args
   
   #initialize screen
   #-player
-  args.state.player = Player.new(50, 50, 500, 50, "sprites/icon.png", "3_3") if args.state.player.nil?
+  args.state.player = Player.new(50, 50, 500, 50, "sprites/main.png", "3_3") if args.state.player.nil?
   player = args.state.player
   #args.outputs.labels << [500, 30, player.pos_x.to_s + " " + player.pos_y.to_s]
   player.collision_points.each do |cp|
