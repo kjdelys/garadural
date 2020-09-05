@@ -153,7 +153,7 @@ def tick args
     if player_position == [1, 0]
       player.teleport([20, player.pos_y])
     elsif player_position == [0, 1]
-      player.teleport([player.pos_x, 700])
+      player.teleport([player.pos_x, 690])
     elsif player_position == [-1, 0]
       player.teleport([1240, player.pos_y])
     elsif player_position == [0, -1]
