@@ -146,10 +146,20 @@ def tick args
     end
   end
 
-  if player.position != [0,0]
+  player_position = player.position
+  if player_position != [0,0]
     player.change_salle(player.position)
     next_salle = 'MAP_' + player.salle_id
-    player.teleport([500, 500])
+    if player_position == [1, 0]
+      player.teleport([20, player.pos_y])
+    elsif player_position == [0, 1]
+      player.teleport([player.pos_x, 700])
+    elsif player_position == [-1, 0]
+      player.teleport([1240, player.pos_y])
+    elsif player_position == [0, -1]
+      player.teleport([player.pos_x, 20])
+    end
+    
     args.state[:bullets] = []
     args.state[:ennemies] = []
     args.state.ennemies_loaded = false
