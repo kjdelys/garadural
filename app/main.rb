@@ -88,6 +88,8 @@ def tick args
     args.state[:collision_intervalles] = collision_intervalles(current_map["collision"])
   end
    
+  #viser
+  #AJOUTER ICI LE CHANGEMENT D'ORIENTATION
   #move player
   if args.inputs.keyboard.right && args.inputs.keyboard.up
     player.move_x(STEP_SIZE, args.state[:collision_intervalles])
@@ -140,6 +142,9 @@ def tick args
       (ennemies+[player]).each do |character|
         if [bullet.last_pos_x, bullet.last_pos_y].inside_rect? character.image_rectangle
           character.change_pv(-10)
+          if character != player
+            character.aggressive = true
+          end
           if character.is_dead?
             if character == player
               puts("PARTIE TERMINE")
