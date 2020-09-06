@@ -89,7 +89,13 @@ def tick args
   end
    
   #viser
-  #AJOUTER ICI LE CHANGEMENT D'ORIENTATION
+  if args.inputs.keyboard.key_down.exclamation_point
+    if player.orientation != 315
+      player.change_orientation(player.orientation+45) 
+    elsif player.orientation == 315
+      player.change_orientation(0)
+    end
+  end
   #move player
   if args.inputs.keyboard.right && args.inputs.keyboard.up
     player.move_x(STEP_SIZE, args.state[:collision_intervalles])
