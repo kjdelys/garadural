@@ -5,6 +5,7 @@ require 'app/character.rb'
 require 'app/player.rb'
 require 'app/ennemy.rb'
 require 'app/bullet.rb'
+require 'app/sword.rb'
 
 STEP_SIZE = 10
 WIDTH_MAP = 5
@@ -17,6 +18,7 @@ def tick args
   args.state[:ennemies] ||= []
   args.state.ennemies_loaded ||= false
   args.state[:bullets] ||= []
+  args.state[:swords] ||= []
   args.state[:collision_intervalles] ||= ''
 
   
@@ -52,6 +54,7 @@ def tick args
     args.outputs.solids << bullet.rect
   end
 
+
   if args.state.ennemies_loaded == false
     current_map["ennemies"].each do |ennemy_prop|
       ennemy = Ennemy.new(ennemy_prop[0], ennemy_prop[1], ennemy_prop[2], ennemy_prop[3], ennemy_prop[4], current_salle.gsub('MAP_', ''))
@@ -79,6 +82,10 @@ def tick args
     args.outputs.sprites << current_map["fragment"]
   end
   args.outputs.sprites << player.image
+
+  args.state[:swords].each do |sword|
+    args.outputs.sprites << sword.image
+  end
 
   unless current_map["statue"].nil?
     args.outputs.solids << current_map["statue"]
@@ -136,6 +143,10 @@ def tick args
     args.state[:bullets] << player.shoot
   end
 
+  if args.inputs.keyboard.key_down.escape
+    args.state[:swords] << player.use_sword
+  end
+
   #update bullets
   bullets = args.state[:bullets]
   args.state[:bullets] = []
@@ -163,6 +174,8 @@ def tick args
       end
     end
   end
+
+
 
   player_position = player.position
   if player_position != [0,0]

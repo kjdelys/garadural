@@ -164,11 +164,25 @@ class Character
         Bullet.new(@orientation, @pos_x+(@largeur/2), @pos_y+(@longueur/2), 25, @salle_id)
     end
 
+    def use_sword
+        center_points = collision_points[5]
+        puts(center_points)
+        Sword.new(@orientation, center_points[0], center_points[1], 20, @salle_id)
+    end
+
     def change_pv(hp)
         @pv += hp
     end
 
     def is_dead?
         @pv < 0 ? true : false 
+    end
+
+    def sword_attack(orientation_attack=nil)
+        if orientation_attack.nil?
+            orientation_attack = @orientation
+        else
+            orientation_attack += 10
+        end
     end
 end
