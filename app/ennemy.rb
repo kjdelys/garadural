@@ -5,7 +5,7 @@ class Ennemy < Character
         "Ennemy"
     end
 
-    def attack(player_pos, collision_intervalles)
+    def follow(player_pos, collision_intervalles)
 
         vitesse = STEP_SIZE/2
         player_x = player_pos[0][0]
@@ -23,6 +23,14 @@ class Ennemy < Character
         end
         move_y(haut*vitesse, collision_intervalles, force_move?)
         move_x(gauche*vitesse, collision_intervalles, force_move?)
+    end
+
+    def sword_attack(player)
+        if (@pos_x - player.central_point[0]).abs < 80 && (@pos_y - player.central_point[1]).abs < 80
+            true
+        else
+            false
+        end
     end
 
     def force_move?

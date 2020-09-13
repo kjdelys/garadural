@@ -66,8 +66,13 @@ def tick args
 
   args.state[:ennemies].each do |ennemy|
     if ennemy.aggressive == true
-      attack = ennemy.attack(player.collision_points, args.state[:collision_intervalles])
-      ennemy.aggressive = false if attack == "stop"
+      follow = ennemy.follow(player.collision_points, args.state[:collision_intervalles])
+      if ennemy.can_attack == true && ennemy.sword_attack(player)
+        sword = ennemy.use_sword
+        args.state[:swords] << sword
+        ennemy.can_attack = false
+      end
+      ennemy.aggressive = false if follow == "stop"
     else
       if ennemy.can_see?(player) == true
         ennemy.aggressive = true 
@@ -142,10 +147,11 @@ def tick args
 
     if args.inputs.keyboard.key_down.escape
       sword = player.use_sword
+      player.can_attack = false
       args.state[:swords] << sword
     end
   end
-  
+
   #update bullets
   bullets = args.state[:bullets]
   args.state[:bullets] = []
@@ -184,6 +190,7 @@ def tick args
       sword.character.can_move = false
     else
       sword.character.can_move = true
+      sword.character.can_attack = true
     end
   end
 
