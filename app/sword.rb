@@ -1,17 +1,19 @@
 class Sword
-    attr_accessor :orientation, :pos_x, :pos_y, :size, :salle_id, :image
+    attr_accessor :orientation, :pos_x, :pos_y, :size, :salle_id, :image, :character
 
-    def initialize(orientation, pos_x, pos_y, size, salle_id, params_size={})
-        @orientation = orientation
+    def initialize(orientation, pos_x, pos_y, size, salle_id, character, params_size={})
+        @orientation = 0
+        #@orientation = orientation
         @pos_x = pos_x
         @pos_y = pos_y
         @size = size
         @image = define_image(pos_x, pos_y, orientation, params_size)
         @salle_id = salle_id
+        @character = character
     end
 
     def define_image(pos_x, pos_y, orientation, params_size)
-        puts(orientation)
+
         x_shift = 25 if params_size["largeur"].nil?
         y_shift = 25 if params_size["longueur"].nil?
         if orientation == 45
@@ -40,5 +42,15 @@ class Sword
 
     def rect
         [pos_x, pos_y, 10, 100]
+    end
+
+    def update_sword
+        @orientation += 45
+        if @orientation < 361
+            @image = define_image(pos_x, pos_y, @orientation, {})
+            return @image
+        else
+            return nil
+        end
     end
 end

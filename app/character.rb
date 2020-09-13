@@ -1,6 +1,6 @@
 class Character
 
-    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation, :pv
+    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation, :pv, :can_move
     def initialize(longueur, largeur, pos_x, pos_y, image, salle_id)
         @longueur = longueur
         @largeur = largeur
@@ -11,6 +11,7 @@ class Character
         @salle_id = salle_id
         @pv = 100
         @id = rand(10000)
+        @can_move = true
     end
 
     def serialize
@@ -166,8 +167,7 @@ class Character
 
     def use_sword
         center_points = collision_points[5]
-        puts(center_points)
-        Sword.new(@orientation, center_points[0], center_points[1], 20, @salle_id)
+        return Sword.new(@orientation, center_points[0], center_points[1], 20, @salle_id, self)
     end
 
     def change_pv(hp)
@@ -178,11 +178,4 @@ class Character
         @pv < 0 ? true : false 
     end
 
-    def sword_attack(orientation_attack=nil)
-        if orientation_attack.nil?
-            orientation_attack = @orientation
-        else
-            orientation_attack += 10
-        end
-    end
 end

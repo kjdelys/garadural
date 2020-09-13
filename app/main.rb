@@ -83,10 +83,6 @@ def tick args
   end
   args.outputs.sprites << player.image
 
-  args.state[:swords].each do |sword|
-    args.outputs.sprites << sword.image
-  end
-
   unless current_map["statue"].nil?
     args.outputs.solids << current_map["statue"]
   end
@@ -94,59 +90,62 @@ def tick args
   if args.state[:collision_intervalles] == ''
     args.state[:collision_intervalles] = collision_intervalles(current_map["collision"])
   end
-   
-  #viser
-  if args.inputs.keyboard.key_down.exclamation_point
-    if player.orientation != 315
-      player.change_orientation(player.orientation+45) 
-    elsif player.orientation == 315
+
+  if player.can_move == true
+    #viser
+    if args.inputs.keyboard.key_down.exclamation_point
+      if player.orientation != 315
+        player.change_orientation(player.orientation+45) 
+      elsif player.orientation == 315
+        player.change_orientation(0)
+      end
+    end
+    #move player
+    if args.inputs.keyboard.right && args.inputs.keyboard.up
+      player.move_x(STEP_SIZE, args.state[:collision_intervalles])
+      player.move_y(STEP_SIZE, args.state[:collision_intervalles])
+      player.change_orientation(45)
+    elsif args.inputs.keyboard.right && args.inputs.keyboard.down
+      player.move_x(STEP_SIZE, args.state[:collision_intervalles])
+      player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
+      player.change_orientation(135)
+    elsif args.inputs.keyboard.right
+      player.move_x(STEP_SIZE, args.state[:collision_intervalles])
+      player.change_orientation(90)
+    end
+
+    if args.inputs.keyboard.left && args.inputs.keyboard.up
+      player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
+      player.move_y(STEP_SIZE, args.state[:collision_intervalles])
+      player.change_orientation(315)
+    elsif args.inputs.keyboard.left && args.inputs.keyboard.down
+      player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
+      player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
+      player.change_orientation(225)
+    elsif args.inputs.keyboard.left
+      player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
+      player.change_orientation(270)
+    end
+
+    if args.inputs.keyboard.up && !args.inputs.keyboard.left && !args.inputs.keyboard.right
+      player.move_y(STEP_SIZE, args.state[:collision_intervalles])
       player.change_orientation(0)
     end
-  end
-  #move player
-  if args.inputs.keyboard.right && args.inputs.keyboard.up
-    player.move_x(STEP_SIZE, args.state[:collision_intervalles])
-    player.move_y(STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(45)
-  elsif args.inputs.keyboard.right && args.inputs.keyboard.down
-    player.move_x(STEP_SIZE, args.state[:collision_intervalles])
-    player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(135)
-  elsif args.inputs.keyboard.right
-    player.move_x(STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(90)
-  end
+    if args.inputs.keyboard.down && !args.inputs.keyboard.left && !args.inputs.keyboard.right
+      player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
+      player.change_orientation(180)
+    end
 
-  if args.inputs.keyboard.left && args.inputs.keyboard.up
-    player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
-    player.move_y(STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(315)
-  elsif args.inputs.keyboard.left && args.inputs.keyboard.down
-    player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
-    player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(225)
-  elsif args.inputs.keyboard.left
-    player.move_x(-STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(270)
-  end
+    if args.inputs.keyboard.key_down.space
+      args.state[:bullets] << player.shoot
+    end
 
-  if args.inputs.keyboard.up && !args.inputs.keyboard.left && !args.inputs.keyboard.right
-    player.move_y(STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(0)
+    if args.inputs.keyboard.key_down.escape
+      sword = player.use_sword
+      args.state[:swords] << sword
+    end
   end
-  if args.inputs.keyboard.down && !args.inputs.keyboard.left && !args.inputs.keyboard.right
-    player.move_y(-STEP_SIZE, args.state[:collision_intervalles])
-    player.change_orientation(180)
-  end
-
-  if args.inputs.keyboard.key_down.space
-    args.state[:bullets] << player.shoot
-  end
-
-  if args.inputs.keyboard.key_down.escape
-    args.state[:swords] << player.use_sword
-  end
-
+  
   #update bullets
   bullets = args.state[:bullets]
   args.state[:bullets] = []
@@ -175,6 +174,18 @@ def tick args
     end
   end
 
+  swords = args.state[:swords]
+  args.state[:swords] = []
+  swords.each do |sword|
+    sword_info = sword.update_sword
+    unless sword_info.nil?
+      args.outputs.sprites << sword.image
+      args.state[:swords] << sword
+      sword.character.can_move = false
+    else
+      sword.character.can_move = true
+    end
+  end
 
 
   player_position = player.position
