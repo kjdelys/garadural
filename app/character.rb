@@ -167,7 +167,7 @@ class Character
     end
 
     def use_sword
-        return Sword.new(@orientation, central_point[0], central_point[1], 20, @salle_id, self)
+        return Sword.new(@orientation, central_point[0], central_point[1], 100, @salle_id, self)
     end
 
     def central_point

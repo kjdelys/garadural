@@ -86,7 +86,7 @@ def tick args
   unless current_map["fragment"].nil?
     args.outputs.sprites << current_map["fragment"]
   end
-  args.outputs.sprites << player.image
+  args.outputs.sprites << player.image unless player.is_dead?
 
   unless current_map["statue"].nil?
     args.outputs.solids << current_map["statue"]
@@ -185,9 +185,32 @@ def tick args
   swords.each do |sword|
     sword_info = sword.update_sword
     unless sword_info.nil?
+      hit_point = sword.hit_someone(collision_intervalles(args.state[:ennemies].map{|ennemy| ennemy.image_size} - sword.character.image_size))
+      if sword.hit_someone(collision_intervalles([player.image_size] + args.state[:ennemies].map{|ennemy| ennemy.image_size})) != [nil, nil]
+        ennemies = args.state[:ennemies]
+        (ennemies+[player] - [sword.character]).each do |character|
+          if hit_point.inside_rect? character.image_rectangle
+            character.change_pv(-10)
+            if character != player
+              character.aggressive = true
+            end
+            if character.is_dead?
+              if character == player
+                puts("PARTIE TERMINE")
+              else
+                args.state[:ennemies].delete(character)
+              end
+            end
+            break
+          end
+        end        
+      end
       args.outputs.sprites << sword.image
       args.state[:swords] << sword
       sword.character.can_move = false
+      sword.collision_points.each do |snl|
+        args.outputs.labels << [snl[0], snl[1], "X", 255, 0, 0]
+      end
     else
       sword.character.can_move = true
       sword.character.can_attack = true
