@@ -15,19 +15,6 @@ def generate_map
             if position_statue == [x, y]
                 mapper["statue"] = create_statue?
             end
-
-
-            # mapper = {
-            #     "background" => background,
-            #     "rects" => rectangles,
-            #     "collision" => []
-            # }
-            
-            map_nord = "MAP_" + x.to_s + "_" + (y-1).to_s
-            map_sud = "MAP_" + x.to_s + "_" + (y+1).to_s
-            map_ouest = "MAP_" + (x-1).to_s + "_" + y.to_s
-            map_est = "MAP_" + (x+1).to_s + "_" + y.to_s
-            opts = {}
             
             
             mapper["borders"] = borders
@@ -131,7 +118,21 @@ end
 def rectangles
     res = []
     (1..rand(20)).each do |rect|
-        res << [rand(1280), rand(720), rand(100), rand(100)]
+        res_element = [rand(1280), rand(720), rand(100), rand(100)]
+        if ((560..760).to_a & (res_element[0]..(res_element[0]+res_element[2])).to_a) != []
+            if res_element[1] > 620
+                res_element[1] = 620
+            elsif res_element[1] < 100
+                res_element[1] = 100
+            end
+        elsif ((280..440).to_a & (res_element[1]..(res_element[1]+res_element[3])).to_a) != []
+            if res_element[0] > 1180
+                res_element[0] = 1180
+            elsif res_element[0] < 100
+                res_element[0] = 100
+            end
+        end
+        res << res_element
     end
     res
 end
@@ -139,3 +140,6 @@ end
 def create_statue?
     return [400, 200, 200, 100, 50, 50, 255, 128]
 end
+
+
+
