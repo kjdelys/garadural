@@ -1,6 +1,6 @@
 class Character
 
-    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation, :pv, :can_move, :can_attack
+    attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation, :pv, :can_move, :can_attack, :hit_time
     def initialize(longueur, largeur, pos_x, pos_y, image, salle_id)
         @longueur = longueur
         @largeur = largeur
@@ -13,6 +13,13 @@ class Character
         @id = rand(10000)
         @can_move = true
         @can_attack = true
+        @hit_time = 0
+    end
+
+    def change_hit_time(var)
+        return if @hit_time == 0
+        @hit_time += var
+        recovery_time_image(false) if @hit_time == 0
     end
 
     def serialize
@@ -24,7 +31,8 @@ class Character
             orientation: @orientation,
             image: @image,
             salle_id: @salle_id,
-            pv: @pv       
+            pv: @pv,
+            hit_time: @hit_time      
         }
     end
     
@@ -175,7 +183,19 @@ class Character
     end
 
     def change_pv(hp)
-        @pv += hp
+        if @hit_time == 0
+            @pv += hp
+            @hit_time = 60
+            recovery_time_image(true)
+        end
+    end
+
+    def recovery_time_image(on=true)
+        if on
+            @image += [250, 100, 250, 10]
+        else
+            @image = @image.take(6)
+        end
     end
 
     def is_dead?

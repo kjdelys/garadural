@@ -12,3 +12,11 @@ def collision_intervalles(solid_points)
     end
     return statement.delete_suffix(' ||')
 end
+
+def all_characters(player, ennemies)
+    [player] + ennemies.map{|ennemy| ennemy}
+end
+
+def all_character_images(characters)
+    characters.map{|character| character.image_size}
+end

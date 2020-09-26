@@ -152,6 +152,13 @@ def tick args
     end
   end
 
+
+  all_characters = all_characters(player, args.state[:ennemies])
+
+  all_characters.each do |character|
+    character.change_hit_time(-1)
+  end
+  
   #update bullets
   bullets = args.state[:bullets]
   args.state[:bullets] = []
@@ -185,8 +192,8 @@ def tick args
   swords.each do |sword|
     sword_info = sword.update_sword
     unless sword_info.nil?
-      hit_point = sword.hit_someone(collision_intervalles(args.state[:ennemies].map{|ennemy| ennemy.image_size} - sword.character.image_size))
-      if sword.hit_someone(collision_intervalles([player.image_size] + args.state[:ennemies].map{|ennemy| ennemy.image_size})) != [nil, nil]
+      hit_point = sword.hit_someone(collision_intervalles(all_character_images(all_characters) - sword.character.image_size))
+      if sword.hit_someone(collision_intervalles(all_character_images(all_characters))) != [nil, nil]
         ennemies = args.state[:ennemies]
         (ennemies+[player] - [sword.character]).each do |character|
           if hit_point.inside_rect? character.image_rectangle
