@@ -1,5 +1,5 @@
 class Player < Character
-
+    RECOVERY_TIME = 50
     def subclass_name
         "Player"
     end

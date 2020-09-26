@@ -1,5 +1,7 @@
 class Character
 
+    RECOVERY_TIME = 60
+
     attr_accessor :longueur, :largeur, :pos_x,:pos_y, :image, :salle_id, :orientation, :pv, :can_move, :can_attack, :hit_time
     def initialize(longueur, largeur, pos_x, pos_y, image, salle_id)
         @longueur = longueur
@@ -15,6 +17,7 @@ class Character
         @can_attack = true
         @hit_time = 0
     end
+
 
     def change_hit_time(var)
         return if @hit_time == 0
@@ -185,7 +188,7 @@ class Character
     def change_pv(hp)
         if @hit_time == 0
             @pv += hp
-            @hit_time = 60
+            @hit_time = RECOVERY_TIME
             recovery_time_image(true)
         end
     end

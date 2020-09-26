@@ -1,4 +1,5 @@
 class Ennemy < Character
+    RECOVERY_TIME = 30
     attr_accessor :last_pos, :attempt, :aggressive
 
     def subclass_name
